@@ -1,0 +1,121 @@
+import CoreGraphics
+
+/// The active selection, as a normalized path in canvas space.
+/// Not part of `Document` (it is not persisted), but it *is* included in undo
+/// snapshots so Cmd+Z restores selection changes the way Photoshop does.
+struct SelectionState: Equatable {
+    /// nil means "no selection" (everything acts as selected for editing ops,
+    /// and Add Layer Mask produces a reveal-all mask).
+    private(set) var path: CGPath?
+
+    static let empty = SelectionState(path: nil)
+
+    var isEmpty: Bool { path == nil }
+
+    enum CombineMode {
+        case replace
+        case add
+        case subtract
+    }
+
+    func combining(_ newPath: CGPath, mode: CombineMode) -> SelectionState {
+        let result: CGPath?
+        switch mode {
+        case .replace:
+            result = newPath
+        case .add:
+            result = path.map { $0.union(newPath) } ?? newPath
+        case .subtract:
+            guard let path else { return .empty }
+            result = path.subtracting(newPath)
+        }
+        guard let result, !result.isEmpty, !result.boundingBoxOfPath.isEmpty else { return .empty }
+        return SelectionState(path: result.normalized())
+    }
+
+    func inverted(in canvasRect: CGRect) -> SelectionState {
+        let canvasPath = CGPath(rect: canvasRect, transform: nil)
+        guard let path else { return SelectionState(path: canvasPath) }
+        let inverted = canvasPath.subtracting(path)
+        guard !inverted.isEmpty, !inverted.boundingBoxOfPath.isEmpty else { return .empty }
+        return SelectionState(path: inverted.normalized())
+    }
+}
+
+// MARK: - Select > Modify morphology
+
+// Pure geometry for Select > Modify > Grow / Contract / Border and
+// Select > Transform Selection. Kept on the value type (like `combining` /
+// `inverted`) so it stays unit-testable independently of the controller.
+//
+// All three Modify operations are built from the same primitive: stroking the
+// selection boundary produces the band ("annulus") of the stroke width centred
+// on the edge. Grow unions that band on, Contract subtracts it, Border *is*
+// the band. The path representation is what keeps `MaskFactory` exact — do not
+// replace this with raster morphology.
+extension SelectionState {
+    /// Select > Modify radii/widths are clamped to match the feather field's
+    /// 1...250 px range.
+    static let modifyRadiusRange: ClosedRange<CGFloat> = 1 ... 250
+
+    private static func clampedModifyRadius(_ value: CGFloat) -> CGFloat {
+        min(max(value, modifyRadiusRange.lowerBound), modifyRadiusRange.upperBound)
+    }
+
+    /// The band of `width` px centred on the boundary of `path`.
+    /// `path` must already be normalized — stroking a self-intersecting lasso
+    /// path produces winding artefacts.
+    private static func boundaryBand(of path: CGPath, width: CGFloat) -> CGPath {
+        path.copy(strokingWithWidth: width, lineCap: .round, lineJoin: .round, miterLimit: 10)
+    }
+
+    /// Shared "collapse degenerate results to `.empty`" rule (same guard as
+    /// `combining` / `inverted`).
+    private init(normalizing path: CGPath) {
+        if path.isEmpty || path.boundingBoxOfPath.isEmpty {
+            self = .empty
+        } else {
+            self.init(path: path.normalized())
+        }
+    }
+
+    /// Expands the selection outward by `radius` px (round joins round off
+    /// convex corners, as in Photoshop). Deliberately *not* clipped to the
+    /// canvas rect: selections outside the canvas are meaningful because layer
+    /// content outside the canvas survives crop.
+    func grown(by radius: CGFloat) -> SelectionState {
+        guard let path else { return .empty }
+        let radius = Self.clampedModifyRadius(radius)
+        let base = path.normalized()
+        return SelectionState(normalizing: base.union(Self.boundaryBand(of: base, width: 2 * radius)))
+    }
+
+    /// Contracts the selection inward by `radius` px. Collapses to `.empty`
+    /// when the radius reaches the shape's half-width — that is correct, and
+    /// the caller still commits the empty result because the user asked for it.
+    func contracted(by radius: CGFloat) -> SelectionState {
+        guard let path else { return .empty }
+        let radius = Self.clampedModifyRadius(radius)
+        let base = path.normalized()
+        return SelectionState(normalizing: base.subtracting(Self.boundaryBand(of: base, width: 2 * radius)))
+    }
+
+    /// Replaces the selection with the band of `width` px centred on its
+    /// boundary (Photoshop's Border is centred on the edge; match that).
+    func bordered(width: CGFloat) -> SelectionState {
+        guard let path else { return .empty }
+        let width = Self.clampedModifyRadius(width)
+        let base = path.normalized()
+        return SelectionState(normalizing: Self.boundaryBand(of: base, width: width))
+    }
+
+    /// The selection mapped through `transform` (canvas space → canvas space).
+    /// Commit step of Select > Transform Selection. A degenerate (zero-scale)
+    /// transform collapses to `.empty`.
+    func transformed(by transform: CGAffineTransform) -> SelectionState {
+        guard let path else { return .empty }
+        var transform = transform
+        guard let mapped = path.copy(using: &transform) else { return self }
+        return SelectionState(normalizing: mapped)
+    }
+}

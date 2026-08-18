@@ -1,0 +1,50 @@
+{
+  "alphaTolerance" : 0,
+  "canvas" : {
+    "height" : 200,
+    "width" : 300
+  },
+  "colorTolerance" : 2,
+  "layers" : [
+    {
+      "opacity" : 1,
+      "source" : "inputs\/white-320x240-p3.png",
+      "transform" : [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "visible" : true
+    },
+    {
+      "mask" : {
+        "feather" : 20,
+        "selectionRect" : [
+          80,
+          70,
+          140,
+          60
+        ]
+      },
+      "opacity" : 1,
+      "source" : "inputs\/blue-200x120-p3.png",
+      "transform" : [
+        1,
+        0,
+        0,
+        1,
+        50,
+        40
+      ],
+      "visible" : true
+    }
+  ],
+  "name" : "mask-feather-20",
+  "notes" : "Rectangular mask with 20px feather (Gaussian sigma 10) over an opaque background. Closed-form erf reference. Selection rect is canvas-space, y-up.",
+  "outputProfile" : "displayP3",
+  "reference" : "references\/mask-feather-20.png",
+  "referenceKind" : "analytic"
+}

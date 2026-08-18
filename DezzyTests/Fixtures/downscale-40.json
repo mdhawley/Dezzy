@@ -1,0 +1,41 @@
+{
+  "alphaTolerance" : 0,
+  "canvas" : {
+    "height" : 240,
+    "width" : 320
+  },
+  "colorTolerance" : 2,
+  "layers" : [
+    {
+      "opacity" : 1,
+      "source" : "inputs\/white-320x240-p3.png",
+      "transform" : [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "visible" : true
+    },
+    {
+      "opacity" : 1,
+      "source" : "inputs\/gradcheck-640x480-srgb.png",
+      "transform" : [
+        0.4,
+        0,
+        0,
+        0.4,
+        37.3,
+        21.7
+      ],
+      "visible" : true
+    }
+  ],
+  "name" : "downscale-40",
+  "notes" : "Layer downscaled to 40% (Lanczos path) and repositioned fractionally. Recorded regression reference.",
+  "outputProfile" : "sRGB",
+  "reference" : "references\/downscale-40.png",
+  "referenceKind" : "recorded"
+}

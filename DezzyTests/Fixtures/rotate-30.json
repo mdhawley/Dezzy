@@ -1,0 +1,41 @@
+{
+  "alphaTolerance" : 0,
+  "canvas" : {
+    "height" : 240,
+    "width" : 320
+  },
+  "colorTolerance" : 2,
+  "layers" : [
+    {
+      "opacity" : 1,
+      "source" : "inputs\/white-320x240-p3.png",
+      "transform" : [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "visible" : true
+    },
+    {
+      "opacity" : 1,
+      "source" : "inputs\/gradcheck-200x150-srgb.png",
+      "transform" : [
+        0.8660254037844387,
+        0.49999999999999994,
+        -0.49999999999999994,
+        0.8660254037844387,
+        110.89745962155612,
+        5.0480947161671
+      ],
+      "visible" : true
+    }
+  ],
+  "name" : "rotate-30",
+  "notes" : "Layer rotated 30 degrees about its centre, placed at canvas centre. Recorded regression reference.",
+  "outputProfile" : "sRGB",
+  "reference" : "references\/rotate-30.png",
+  "referenceKind" : "recorded"
+}

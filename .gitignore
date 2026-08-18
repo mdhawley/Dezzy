@@ -1,0 +1,20 @@
+# macOS
+.DS_Store
+
+# Xcode
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+DerivedData/
+build/
+
+# Swift Package Manager (unused, but harmless)
+.build/
+
+# Golden-image test harness failure artifacts (regenerated on failure;
+# the fixtures themselves under DezzyTests/Fixtures/ ARE tracked)
+test-output/
+
+# Claude Code agent worktrees — temporary checkouts managed by the tool;
+# never commit these (their branches get merged, then the dirs are removed)
+.claude/worktrees/

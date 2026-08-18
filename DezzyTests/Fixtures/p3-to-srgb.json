@@ -1,0 +1,28 @@
+{
+  "alphaTolerance" : 0,
+  "canvas" : {
+    "height" : 64,
+    "width" : 256
+  },
+  "colorTolerance" : 2,
+  "layers" : [
+    {
+      "opacity" : 1,
+      "source" : "inputs\/p3bands-256x64-p3.png",
+      "transform" : [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "visible" : true
+    }
+  ],
+  "name" : "p3-to-srgb",
+  "notes" : "Display P3 source exported to sRGB; reference converted by ColorSync, independent of Core Image.",
+  "outputProfile" : "sRGB",
+  "reference" : "references\/p3-to-srgb.png",
+  "referenceKind" : "colorsync"
+}

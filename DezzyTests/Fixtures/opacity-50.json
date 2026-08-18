@@ -1,0 +1,41 @@
+{
+  "alphaTolerance" : 0,
+  "canvas" : {
+    "height" : 192,
+    "width" : 256
+  },
+  "colorTolerance" : 2,
+  "layers" : [
+    {
+      "opacity" : 1,
+      "source" : "inputs\/white-320x240-p3.png",
+      "transform" : [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "visible" : true
+    },
+    {
+      "opacity" : 0.5,
+      "source" : "inputs\/red-128x96-p3.png",
+      "transform" : [
+        1,
+        0,
+        0,
+        1,
+        64,
+        48
+      ],
+      "visible" : true
+    }
+  ],
+  "name" : "opacity-50",
+  "notes" : "Layer at 50% opacity over an opaque background. Linear-light blend, verified analytically.",
+  "outputProfile" : "displayP3",
+  "reference" : "references\/opacity-50.png",
+  "referenceKind" : "analytic"
+}

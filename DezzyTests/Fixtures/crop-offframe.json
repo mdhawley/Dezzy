@@ -1,0 +1,41 @@
+{
+  "alphaTolerance" : 0,
+  "canvas" : {
+    "height" : 150,
+    "width" : 200
+  },
+  "colorTolerance" : 2,
+  "layers" : [
+    {
+      "opacity" : 1,
+      "source" : "inputs\/teal-100x100-p3.png",
+      "transform" : [
+        1,
+        0,
+        0,
+        1,
+        150,
+        90
+      ],
+      "visible" : true
+    },
+    {
+      "opacity" : 1,
+      "source" : "inputs\/orange-80x80-p3.png",
+      "transform" : [
+        1,
+        0,
+        0,
+        1,
+        -30,
+        -20
+      ],
+      "visible" : true
+    }
+  ],
+  "name" : "crop-offframe",
+  "notes" : "Canvas frames two layers partly out of frame (a crop's end state); transparent background, binary alpha, verified analytically.",
+  "outputProfile" : "displayP3",
+  "reference" : "references\/crop-offframe.png",
+  "referenceKind" : "analytic"
+}
